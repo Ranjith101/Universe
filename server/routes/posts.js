@@ -24,4 +24,14 @@ router.post('/', upload.single('image'), async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    const posts = await Post.find();
+    res.json(posts);
+  } catch (error) {
+    console.error('Error retrieving posts:', error);
+    res.status(500).json({ message: 'Failed to retrieve posts' });
+  }
+});
+
 module.exports = router;
