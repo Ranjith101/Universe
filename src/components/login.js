@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Modal, Button } from 'react-bootstrap';
-import PostForm from './PostForm';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Modal, Button } from "react-bootstrap";
+import PostForm from "./PostForm";
 
 const Login = () => {
   const [isRegistered, setIsRegistered] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
-  const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '' });
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+  const [registerForm, setRegisterForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleToggleForm = () => {
     setIsRegistered(!isRegistered);
@@ -25,12 +29,15 @@ const Login = () => {
     const { name, value } = e.target;
     setRegisterForm((prevState) => ({ ...prevState, [name]: value }));
   };
-
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3001/api/users/login', loginForm);
-      console.log(response.data); // Handle the response as needed
+      const response = await axios.post(
+        "http://localhost:3001/api/users/login",
+        loginForm
+      );
+      const { token } = response.data;
+      localStorage.setItem("token", token); // Store the token in local storage
       setIsLoggedIn(true);
     } catch (error) {
       console.error(error);
@@ -40,7 +47,10 @@ const Login = () => {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3001/api/users/register', registerForm);
+      const response = await axios.post(
+        "http://localhost:3001/api/users/register",
+        registerForm
+      );
       console.log(response.data); // Handle the response as needed
       setShowSuccessModal(true);
     } catch (error) {
@@ -59,14 +69,23 @@ const Login = () => {
 
   const handleCloseErrorModal = () => {
     setShowErrorModal(false);
-    setErrorMessage('');
+    setErrorMessage("");
   };
-
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Clear the token from local storage
+    setIsLoggedIn(false);
+  };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
   return (
     <div className="container">
       {!isLoggedIn ? (
         <>
-          <h1>{isRegistered ? 'Login' : 'Register'}</h1>
+          <h1>{isRegistered ? "Login" : "Register"}</h1>
           {isRegistered ? (
             <form onSubmit={handleLoginSubmit}>
               <div className="mb-3">
@@ -93,8 +112,12 @@ const Login = () => {
                 Login
               </button>
               <p>
-                Not registered?{' '}
-                <button type="button" className="btn btn-link" onClick={handleToggleForm}>
+                Not registered?{" "}
+                <button
+                  type="button"
+                  className="btn btn-link"
+                  onClick={handleToggleForm}
+                >
                   Register
                 </button>
               </p>
@@ -135,8 +158,12 @@ const Login = () => {
                 Register
               </button>
               <p>
-                Already registered?{' '}
-                <button type="button" className="btn btn-link" onClick={handleToggleForm}>
+                Already registered?{" "}
+                <button
+                  type="button"
+                  className="btn btn-link"
+                  onClick={handleToggleForm}
+                >
                   Login
                 </button>
               </p>
@@ -152,7 +179,10 @@ const Login = () => {
           <Modal.Title>Registration Successful</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Your registration was successful. You can now log in with your credentials.</p>
+          <p>
+            Your registration was successful. You can now log in with your
+            credentials.
+          </p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleCloseModal}>
