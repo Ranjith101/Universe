@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaThumbsUp, FaTrashAlt, FaShareAlt } from 'react-icons/fa';
 import axios from 'axios';
 
-const PostCard = ({ post }) => {
+const PostCard = ({ post, onDelete }) => {
   const [liked, setLiked] = useState(false);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
@@ -25,6 +25,7 @@ const PostCard = ({ post }) => {
       fetchImage();
     }
   }, [post.image]);
+
   const handleLike = () => {
     setLiked(!liked);
   };
@@ -32,7 +33,7 @@ const PostCard = ({ post }) => {
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:3001/api/posts/${post._id}`);
-      // Perform any actions after successful deletion
+      onDelete(post._id); // Notify the parent component about the deletion
     } catch (error) {
       console.error('Error deleting post:', error);
     }

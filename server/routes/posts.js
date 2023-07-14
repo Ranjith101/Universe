@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 const upload = multer({ dest: './uploads/' });
 
@@ -41,6 +42,31 @@ router.get('/image/:filename', (req, res) => {
   const filename = req.params.filename;
   const imagePath = path.join(__dirname, '../uploads/', filename);
   res.sendFile(imagePath);
+});
+
+// Delete a post by ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Delete the associated image file if it exists
+    if (post.image) {
+      const imagePath = path.join(__dirname, '../uploads/', post.image);
+      fs.unlinkSync(imagePath);
+    }
+
+    await Post.findByIdAndDelete(postId);
+
+    res.json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    res.status(500).json({ message: 'Failed to delete post' });
+  }
 });
 
 module.exports = router;

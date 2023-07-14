@@ -1,0 +1,78 @@
+.container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.postForm {
+  background-color: #f2f2f2;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.postForm:hover {
+  transform: scale(1.05);
+}
+
+.formGroup {
+  margin-bottom: 10px;
+}
+
+.textarea {
+  width: 100%;
+  max-width: 750px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.submitButton:hover {
+  background-color: #0056b3;
+}
+
+.postCards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.postCards {
+  width: 100%;
+  margin-bottom: 20px;
+  background-color: #f2f2f2;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.postCards:hover {
+  transform: scale(1.05);
+}
+
+.postCards h3 {
+  margin-top: 0;
+}
+
+.postCards p {
+  margin-bottom: 10px;
+}
+
+.postCards img {
+  max-width: 100%;
+  border-radius: 5px;
+}

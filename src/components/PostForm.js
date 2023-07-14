@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../styles/postform.css';
+import styles from '../styles/PostForm.module.css';
 import PostCard from './PostCard';
+
 const PostForm = () => {
   const [postText, setPostText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [posts, setPosts] = useState([]);
+
   useEffect(() => {
     // Fetch existing posts
     fetchPosts();
@@ -15,7 +17,6 @@ const PostForm = () => {
     try {
       const response = await axios.get('http://localhost:3001/api/posts');
       setPosts(response.data);
-      console.log(response.data)
     } catch (error) {
       console.error(error);
     }
@@ -47,25 +48,26 @@ const PostForm = () => {
       // Reset form
       setPostText('');
       setSelectedImage(null);
-      // Do something with the successful response
-         // Fetch updated posts
-         fetchPosts();
-         // Show success message
-         alert('Post created successfully');
+      // Fetch updated posts
+      fetchPosts();
+      // Show success message
+      alert('Post created successfully');
     } catch (error) {
       console.error(error);
       // Handle error
       alert('Failed to create post');
     }
   };
-
+  const handlePostDelete = (postId) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+  };
   return (
-    <div className="container">
+    <div className={styles.container}>
       <h2>Create a Post</h2>
-      <form onSubmit={handlePostSubmit} className="post-form">
-        <div className="mb-3">
+      <form onSubmit={handlePostSubmit} className={styles.postForm}>
+        <div className={styles.formGroup}>
           <textarea
-            className="form-control"
+            className={styles.textarea}
             name="text"
             placeholder="Write your post..."
             value={postText}
@@ -73,19 +75,21 @@ const PostForm = () => {
             rows={4}
           />
         </div>
-        <div className="mb-3">
+        <div className={styles.formGroup}>
           <input type="file" accept="image/*" onChange={handleImageChange} />
         </div>
-        <div className="mb-3">
-          <button type="submit" className="btn btn-primary">
+        <div className={styles.formGroup}>
+          <button type="submit" className={styles.submitButton}>
             Post
           </button>
         </div>
       </form>
-      
-      {posts.map((post) => (
-      <PostCard key={post._id} post={post} />
-      ))}
+
+      <div className={styles.postCards}>
+        {posts.map((post) => (
+          <PostCard key={post._id} post={post} onDelete={handlePostDelete} />
+        ))}
+      </div>
     </div>
   );
 };

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal, Button } from "react-bootstrap";
 import PostForm from "./PostForm";
+import '../styles/login.css';
 
 const Login = () => {
-  const [isRegistered, setIsRegistered] = useState(true);
+  const [isFlipped, setIsFlipped] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({
@@ -17,7 +18,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleToggleForm = () => {
-    setIsRegistered(!isRegistered);
+    setIsFlipped(!isFlipped);
   };
 
   const handleLoginChange = (e) => {
@@ -29,6 +30,7 @@ const Login = () => {
     const { name, value } = e.target;
     setRegisterForm((prevState) => ({ ...prevState, [name]: value }));
   };
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -71,6 +73,7 @@ const Login = () => {
     setShowErrorModal(false);
     setErrorMessage("");
   };
+
   const handleLogout = () => {
     localStorage.removeItem("token"); // Clear the token from local storage
     setIsLoggedIn(false);
@@ -81,95 +84,102 @@ const Login = () => {
       setIsLoggedIn(true);
     }
   }, []);
+
   return (
     <div className="container">
       {!isLoggedIn ? (
-        <>
-          <h1>{isRegistered ? "Login" : "Register"}</h1>
-          {isRegistered ? (
-            <form onSubmit={handleLoginSubmit}>
-              <div className="mb-3">
-                <input
-                  type="email"
-                  className="form-control"
-                  name="email"
-                  placeholder="Email"
-                  value={loginForm.email}
-                  onChange={handleLoginChange}
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="password"
-                  className="form-control"
-                  name="password"
-                  placeholder="Password"
-                  value={loginForm.password}
-                  onChange={handleLoginChange}
-                />
-              </div>
-              <button type="submit" className="btn btn-primary">
-                Login
-              </button>
-              <p>
-                Not registered?{" "}
-                <button
-                  type="button"
-                  className="btn btn-link"
-                  onClick={handleToggleForm}
-                >
-                  Register
-                </button>
-              </p>
-            </form>
-          ) : (
-            <form onSubmit={handleRegisterSubmit}>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  name="name"
-                  placeholder="Name"
-                  value={registerForm.name}
-                  onChange={handleRegisterChange}
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="email"
-                  className="form-control"
-                  name="email"
-                  placeholder="Email"
-                  value={registerForm.email}
-                  onChange={handleRegisterChange}
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="password"
-                  className="form-control"
-                  name="password"
-                  placeholder="Password"
-                  value={registerForm.password}
-                  onChange={handleRegisterChange}
-                />
-              </div>
-              <button type="submit" className="btn btn-primary">
-                Register
-              </button>
-              <p>
-                Already registered?{" "}
-                <button
-                  type="button"
-                  className="btn btn-link"
-                  onClick={handleToggleForm}
-                >
+        <div className={`flip-card ${isFlipped ? "flipped" : ""}`}>
+          <div className="flip-card-inner">
+            <div className="flip-card-front">
+              <h1>Login</h1>
+              <form onSubmit={handleLoginSubmit}>
+                {/* Login form fields */}
+                <div className="form-group">
+                  <input
+                    type="email"
+                    className="form-control"
+                    name="email"
+                    placeholder="Email"
+                    value={loginForm.email}
+                    onChange={handleLoginChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="password"
+                    className="form-control"
+                    name="password"
+                    placeholder="Password"
+                    value={loginForm.password}
+                    onChange={handleLoginChange}
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary">
                   Login
                 </button>
-              </p>
-            </form>
-          )}
-        </>
+                <p>
+                  Not registered?{" "}
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={handleToggleForm}
+                  >
+                    Register
+                  </button>
+                </p>
+              </form>
+            </div>
+            <div className="flip-card-back">
+              <h1>Register</h1>
+              <form onSubmit={handleRegisterSubmit}>
+                {/* Register form fields */}
+                <div className="form-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="name"
+                    placeholder="Name"
+                    value={registerForm.name}
+                    onChange={handleRegisterChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="email"
+                    className="form-control"
+                    name="email"
+                    placeholder="Email"
+                    value={registerForm.email}
+                    onChange={handleRegisterChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="password"
+                    className="form-control"
+                    name="password"
+                    placeholder="Password"
+                    value={registerForm.password}
+                    onChange={handleRegisterChange}
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  Register
+                </button>
+                <p>
+                  Already registered?{" "}
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={handleToggleForm}
+                  >
+                    Login
+                  </button>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
       ) : (
         <PostForm />
       )}
