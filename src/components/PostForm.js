@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/postform.css';
 import PostCard from './PostCard';
-
 const PostForm = () => {
   const [postText, setPostText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [posts, setPosts] = useState([]);
-
   useEffect(() => {
     // Fetch existing posts
     fetchPosts();
@@ -34,13 +32,14 @@ const PostForm = () => {
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('text', postText);
+    formData.append('title', postText);
     if (selectedImage) {
-      formData.append('image', selectedImage);
+      const imageBlob = new Blob([selectedImage], { type: selectedImage.type });
+      formData.append('image', imageBlob, selectedImage.name);
     }
 
     try {
-      await axios.post('http://localhost:3001/api/posts', formData, {
+      const response = await axios.post('http://localhost:3001/api/posts', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -48,10 +47,11 @@ const PostForm = () => {
       // Reset form
       setPostText('');
       setSelectedImage(null);
-      // Fetch updated posts
-      fetchPosts();
-      // Show success message
-      alert('Post created successfully');
+      // Do something with the successful response
+         // Fetch updated posts
+         fetchPosts();
+         // Show success message
+         alert('Post created successfully');
     } catch (error) {
       console.error(error);
       // Handle error
@@ -82,7 +82,7 @@ const PostForm = () => {
           </button>
         </div>
       </form>
-
+      
       {posts.map((post) => (
       <PostCard key={post._id} post={post} />
       ))}

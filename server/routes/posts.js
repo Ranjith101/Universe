@@ -2,8 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const path = require('path');
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: './uploads/' });
 
 // Import the Post model
 const Post = require('../models/Post');
@@ -24,6 +25,7 @@ router.post('/', upload.single('image'), async (req, res) => {
   }
 });
 
+// Get all posts
 router.get('/', async (req, res) => {
   try {
     const posts = await Post.find();
@@ -32,6 +34,13 @@ router.get('/', async (req, res) => {
     console.error('Error retrieving posts:', error);
     res.status(500).json({ message: 'Failed to retrieve posts' });
   }
+});
+
+// Get image by filename
+router.get('/image/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const imagePath = path.join(__dirname, '../uploads/', filename);
+  res.sendFile(imagePath);
 });
 
 module.exports = router;

@@ -9,22 +9,22 @@ const PostCard = ({ post }) => {
   const [imageData, setImageData] = useState('');
 
   useEffect(() => {
-    // Fetch the image data when the component mounts
-    fetchImageData();
-  }, []);
+    const fetchImage = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/api/posts/image/${post.image}`, {
+          responseType: 'blob',
+        });
+        const imageUrl = URL.createObjectURL(response.data);
+        setImageData(imageUrl);
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
 
-  const fetchImageData = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3001/api/posts/image/${post.image}`, {
-        responseType: 'arraybuffer',
-      });
-      const base64Image = Buffer.from(response.data, 'binary').toString('base64');
-      setImageData(`data:image/jpeg;base64,${base64Image}`);
-    } catch (error) {
-      console.error('Error fetching image data:', error);
+    if (post.image) {
+      fetchImage();
     }
-  };
-
+  }, [post.image]);
   const handleLike = () => {
     setLiked(!liked);
   };
@@ -32,7 +32,7 @@ const PostCard = ({ post }) => {
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:3001/api/posts/${post._id}`);
-      // Do something after successful deletion
+      // Perform any actions after successful deletion
     } catch (error) {
       console.error('Error deleting post:', error);
     }
@@ -57,20 +57,26 @@ const PostCard = ({ post }) => {
   const handleShare = () => {
     const shareMessage = `Shared from uniVerse: ${post.title}`;
     const shareUrl = window.location.href;
-  
+
     // Share via WhatsApp
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)} ${encodeURIComponent(shareUrl)}`;
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+      shareMessage
+    )} ${encodeURIComponent(shareUrl)}`;
     window.open(whatsappUrl);
-  
+
     // Share via Facebook
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+      shareUrl
+    )}`;
     window.open(facebookUrl);
-  
+
     // Share via LinkedIn
-    const linkedinUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareMessage)}`;
+    const linkedinUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+      shareUrl
+    )}&title=${encodeURIComponent(shareMessage)}`;
     window.open(linkedinUrl);
   };
- console.log(typeof imageData);
+
   return (
     <div className="post-card">
       <h3>{post.title}</h3>
